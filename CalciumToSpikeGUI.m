@@ -66,7 +66,6 @@ set(handles.cellProbabilityThreshold,'Enable','off')
 set(handles.text4,'Enable','off')
 
 load('calciumToSpikeParams.mat')
-% set(handles.frameRate,'String',calciumToSpikeParams.frameRate);
 set(handles.cellProbabilityThreshold,'String',calciumToSpikeParams.cellClassifierThreshold);
 
 calciumToSpikeParams.originalCodePath = uigetdir('','Define the code repository path first');
@@ -91,20 +90,6 @@ varargout{1} = handles.output;
 % cd('C:\Users\abhrajyoti.chakrabarti\Documents\GitHub\OASIS mods')
 load('calciumToSpikeParams.mat')
 cd(calciumToSpikeParams.originalCodePath)
-
-
-
-function frameRate_Callback(hObject, eventdata, handles)
-% hObject    handle to frameRate (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of frameRate as text
-%        str2double(get(hObject,'String')) returns contents of frameRate as a double
-
-load('calciumToSpikeParams.mat')
-calciumToSpikeParams.frameRate = str2double(get(hObject,'String'));
-save('calciumToSpikeParams.mat','calciumToSpikeParams')
 
 
 
