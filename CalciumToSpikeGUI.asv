@@ -67,14 +67,6 @@ set(handles.text4,'Enable','off')
 
 load('calciumToSpikeParams.mat')
 set(handles.cellProbabilityThreshold,'String',calciumToSpikeParams.cellClassifierThreshold);
-set(handles.cellProbThres,'Value',calciumToSpikeParams.cellProbThres);
-if calciumToSpikeParams.cellProbThres == 1
-    set(handles.cellProbabilityThreshold,'Enable','on')
-    set(handles.text4,'Enable','on')
-elseif calciumToSpikeParams.cellProbThres == 0
-    set(handles.cellProbabilityThreshold,'Enable','off')
-    set(handles.text4,'Enable','off')
-end
 
 calciumToSpikeParams.originalCodePath = uigetdir('','Define the code repository path first');
 cd(calciumToSpikeParams.originalCodePath)
@@ -262,6 +254,9 @@ function cellProbThres_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of cellProbThres
 load('calciumToSpikeParams.mat')
 cd(calciumToSpikeParams.originalCodePath)
+
+if calciumToSpikeParams.cellProbThres == 1
+    
 
 calciumToSpikeParams.cellProbThres = get(hObject,'Value');
 save('calciumToSpikeParams.mat','calciumToSpikeParams')
