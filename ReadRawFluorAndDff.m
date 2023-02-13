@@ -34,23 +34,26 @@ warning off
 
 f = waitbar(0, 'Starting');
 n = sum(isCell(:,1));
+counter = 0;
 cellCounter = 1;
 newCounter = 0;
 
 for cellIndex = 1:size(F,1)
     
-    waitbar(cellCounter/n, f, sprintf('Progress: %d %%', floor(cellCounter/n*100)));
-    
     switch calciumToSpikeParams.cellProbThres
         
         case 1
             
+            waitbar(cellCounter/n, f, sprintf('Progress', floor(cellCounter/n*100)));
+            
             if isCell(cellIndex,1) == 1 & isCell(cellIndex,2) >= calciumToSpikeParams.cellClassifierThreshold
                 
+                counter = counter + 1;
+                
                 %Applying 18db PSNR filter
-                PSNR(cellCounter) = 20 * log10(max(F(cellIndex,:)-Fneu(cellIndex,:))/std(Fneu(cellIndex,:)));
+                PSNR(counter) = 20 * log10(max(F(cellIndex,:)-Fneu(cellIndex,:))/std(Fneu(cellIndex,:)));
 
-                if PSNR(cellCounter) > 18
+                if PSNR(counter) > 18
 
                     for frameIndex = 1:size(F,2)
 
@@ -82,6 +85,8 @@ for cellIndex = 1:size(F,1)
                  if isCell(cellIndex,1) == 1
                      
                      newCounter = newCounter + 1;
+                     
+                     waitbar(newCounter/n, f, sprintf('Progress', floor(cellCounter/n*100)));
 
                      %Applying 18db PSNR filter
                      PSNR(newCounter) = 20 * log10(max(F(cellIndex,:)-Fneu(cellIndex,:))/std(Fneu(cellIndex,:)));
@@ -109,8 +114,8 @@ for cellIndex = 1:size(F,1)
 
                 else
                     continue
-                 end
-                cellCounter = cellCounter + 1;
+                end
+
     end
                  
                  

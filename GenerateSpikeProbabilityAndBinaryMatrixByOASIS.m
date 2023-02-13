@@ -12,7 +12,7 @@ oasis_setup
 
 for cellIndex = 1:size(deltaff,1)
     
-    waitbar(cellIndex/totalCells, w, sprintf('Progress (OASIS): %d %%', floor(cellIndex/totalCells*100)));
+    waitbar(cellIndex/totalCells, w, sprintf('Progress (OASIS)', floor(cellIndex/totalCells*100)));
     
     [c, s, options] = deconvolveCa(deltaff(cellIndex,:), 'foopsi', 'ar1', 'smin', -3, 'optimize_pars', true, 'optimize_b', true);
     
@@ -29,7 +29,7 @@ w = waitbar(0, 'Starting');
 
 for cellIndex = 1:size(populationSpikeProbability,1)
     
-    waitbar(cellIndex/totalCells, w, sprintf('Progress (spikes): %d %%', floor(cellIndex/totalCells*100)));
+    waitbar(cellIndex/totalCells, w, sprintf('Progress (spikes)', floor(cellIndex/totalCells*100)));
     
     for frameIndex = 1:size(populationSpikeProbability,2)
         
