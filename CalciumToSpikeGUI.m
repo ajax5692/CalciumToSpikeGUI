@@ -264,6 +264,10 @@ set(handles.calculateSpike,'BackgroundColor',[0.7 0.7 0.7]);
 set(handles.roiExporterText,'String','ROI Export Not Yet Done','ForegroundColor',[0.7,0.7,0.7])
 set(handles.roiExporter,'BackgroundColor',[0.7 0.7 0.7]);
 
+set(handles.totalCells,'String','')
+set(handles.cellsAfterPSNR,'String','')
+set(handles.unitsWithROIexported,'String','')
+
 
 
 % --- Executes on button press in cellProbThres.
