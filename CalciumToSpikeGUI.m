@@ -241,6 +241,9 @@ set(handles.roiExporter,'Enable','off')
 set(handles.roiExporterText,'String','ROI Export Complete','ForegroundColor',[0,0.5,0])
 set(handles.roiExporter,'BackgroundColor',[0.9290 0.6940 0.1250]);
 
+set(handles.totalCells,'String',num2str(calciumToSpikeParams.totalCells))
+set(handles.cellsAfterPSNR,'String',num2str(calciumToSpikeParams.cellsPassingPSNRfilter))
+set(handles.unitsWithROIexported,'String',num2str(calciumToSpikeParams.unitsHavingCoordExported))
 
 cd(calciumToSpikeParams.originalCodePath)
 
