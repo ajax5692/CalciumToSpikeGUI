@@ -34,7 +34,7 @@ warning off
 
 f = waitbar(0, 'Starting');
 n = sum(isCell(:,1));
-cellCounter = 0;
+cellCounter = 1;
 newCounter = 0;
 
 for cellIndex = 1:size(F,1)
@@ -47,8 +47,6 @@ for cellIndex = 1:size(F,1)
             
             if isCell(cellIndex,1) == 1 & isCell(cellIndex,2) >= calciumToSpikeParams.cellClassifierThreshold
                 
-                cellCounter = cellCounter + 1;
-
                 %Applying 18db PSNR filter
                 PSNR(cellCounter) = 20 * log10(max(F(cellIndex,:)-Fneu(cellIndex,:))/std(Fneu(cellIndex,:)));
 
