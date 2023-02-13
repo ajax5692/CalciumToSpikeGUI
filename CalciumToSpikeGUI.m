@@ -23,7 +23,7 @@ function varargout = CalciumToSpikeGUI(varargin)
 
 % Edit the above text to modify the response to help CalciumToSpikeGUI
 
-% Last Modified by GUIDE v2.5 09-Feb-2023 15:00:39
+% Last Modified by GUIDE v2.5 13-Feb-2023 16:05:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -75,6 +75,8 @@ elseif calciumToSpikeParams.cellProbThres == 0
     set(handles.cellProbabilityThreshold,'Enable','off')
     set(handles.text4,'Enable','off')
 end
+
+set(handles.numberOfLayers,'String',calciumToSpikeParams.numLayers)
 
 calciumToSpikeParams.originalCodePath = uigetdir('','Define the code repository path first');
 cd(calciumToSpikeParams.originalCodePath)
@@ -161,6 +163,9 @@ filter = {'*.mat'};
 save(saveFileName,'deltaff','PSNR')
 calciumToSpikeParams.dffFilePath = saveFilePath;
 calciumToSpikeParams.dffFileName = saveFileName;
+calciumToSpikeParams.PSNR = PSNR;
+calciumToSpikeParams.totalCells = length(PSNR);
+calciumToSpikeParams.cellsPassingPSNRfilter = size(deltaff,1);
 cd(calciumToSpikeParams.originalCodePath)
 calciumToSpikeParams.isDffDone = 0;
 save('calciumToSpikeParams.mat','calciumToSpikeParams')
@@ -191,6 +196,7 @@ while calciumToSpikeParams.isSpikeDone == 0
     calciumToSpikeParams.isSpikeDone = 1;
 end
 
+calciumToSpikeParams.numberOfUnitsForSpikeDetected = size(populationSpikeMatrix,1);
 calciumToSpikeParams.isSpikeDone = 0;
 filter = {'*.mat'};
 [saveFileName,calciumToSpikeParams.dffFilePath] = uiputfile(filter,'Append on the existing df/f data to save binary spike data');
@@ -217,11 +223,14 @@ cd(calciumToSpikeParams.dffFilePath)
 fileName = uigetfile;
 load(fileName)
 
+
 while calciumToSpikeParams.isROIExportDone == 0
     set(handles.roiExporterText,'String','ROI Export Ongoing','ForegroundColor','red','Fontweight', 'bold')
     [xCoord,yCoord] = RoiCoordinateExporterFromSuite2p(stat,isCell,calciumToSpikeParams);
     calciumToSpikeParams.isROIExportDone = 1;
 end
+
+calciumToSpikeParams.unitsHavingCoordExported = size(xCoord,2);
 
 filter = {'*.mat'};
 [saveFileName,calciumToSpikeParams.dffFilePath] = uiputfile(filter,'Append on the existing df/f data to save ROI Coordinate Data');
@@ -231,6 +240,7 @@ calciumToSpikeParams.isROIExportDone = 0;
 set(handles.roiExporter,'Enable','off')
 set(handles.roiExporterText,'String','ROI Export Complete','ForegroundColor',[0,0.5,0])
 set(handles.roiExporter,'BackgroundColor',[0.9290 0.6940 0.1250]);
+
 
 cd(calciumToSpikeParams.originalCodePath)
 
@@ -290,7 +300,8 @@ function spikePool_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-CompileSpikeData
+load('calciumToSpikeParams.mat')
+CompileSpikeData(calciumToSpikeParams.numLayers)
 set(handles.spikePool,'BackgroundColor',rand(1,3));
 
 
@@ -300,5 +311,33 @@ function ROIPool_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-CompileROIData
+load('calciumToSpikeParams.mat')
+CompileROIData(calciumToSpikeParams.numLayers)
 set(handles.ROIPool,'BackgroundColor',rand(1,3));
+
+
+
+function numberOfLayers_Callback(hObject, eventdata, handles)
+% hObject    handle to numberOfLayers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of numberOfLayers as text
+%        str2double(get(hObject,'String')) returns contents of numberOfLayers as a double
+load('calciumToSpikeParams.mat')
+calciumToSpikeParams.numLayers = str2double(get(hObject,'String'));
+save('calciumToSpikeParams.mat','calciumToSpikeParams')
+
+
+
+% --- Executes during object creation, after setting all properties.
+function numberOfLayers_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to numberOfLayers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
