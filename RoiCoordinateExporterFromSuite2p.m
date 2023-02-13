@@ -1,5 +1,7 @@
 function [xCoord,yCoord] = RoiCoordinateExporterFromSuite2p(stat,isCell,calciumToSpikeParams)
 
+%This function exports the coordinates, i.e., the centroids of the ROIs
+%detected by Suite2p and gives them an an x and y coordinate output
 
 cellCounter = 1;
 

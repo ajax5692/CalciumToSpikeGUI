@@ -154,7 +154,7 @@ while calciumToSpikeParams.isDffDone == 0;
     calciumToSpikeParams.isDffDone = 1;
 end
 
-saveFilePath = uigetdir('','Save df/f data');
+saveFilePath = uigetdir('','Select the folder location to store the analyzed data');
 cd(saveFilePath)
 filter = {'*.mat'};
 [saveFileName,saveFilePath] = uiputfile(filter,'Specify file name to save df/f data');

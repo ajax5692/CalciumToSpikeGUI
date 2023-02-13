@@ -1,5 +1,8 @@
 function CompileSpikeData
 
+%This function creates a matrix containing all the binary spike information
+%across the different layers.
+
 for layerIndex = 1:3
     
     [fileName filePath] = uigetfile;

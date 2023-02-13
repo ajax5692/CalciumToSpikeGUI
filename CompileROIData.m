@@ -1,5 +1,8 @@
 function CompileROIData
 
+%This function creates a matrix containing all the ROI coordinate
+%information across the different layers.
+
 for layerIndex = 1:3
     
     [fileName filePath] = uigetfile;
