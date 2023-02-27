@@ -59,7 +59,7 @@ for cellIndex = 1:size(F,1)
 
                         %Calculating df/f by (F-Fneu)/avgFneu (avgFneu is calculated by taking the average of 100 frames of Fneu)
                         if (frameIndex+99) <= frameIndex
-                            avgFneu = mean(Fneu(cellIndex,frameIndex+99));
+                            avgFneu = 0.7 * mean(Fneu(cellIndex,frameIndex+99)); %using 
                             deltaff(cellCounter,frameIndex) = (F(cellIndex,frameIndex) - Fneu(cellIndex,frameIndex))/avgFneu;
                         elseif (frameIndex+99) > frameIndex
                             avgFneu = mean(Fneu(cellIndex,end-99:end));

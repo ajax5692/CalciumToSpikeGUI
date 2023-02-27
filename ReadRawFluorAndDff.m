@@ -1,4 +1,4 @@
-function [deltaff,PSNR] = ReadRawFluorAndDff(calciumToSpikeParams)
+function [deltaff,PSNR] = ReadRawFluorAndDff_original(calciumToSpikeParams)
 
 %ReadRawFluorAndDff_MOD
 %This function reads the raw cell fluorescence data (neuropil subtracted)
@@ -14,6 +14,16 @@ cd(matFilepath)
 load(matFilename);
 
 warning off
+
+% timeStamp = (1:numel(F(1,:))).*(1/calciumToSpikeParams.frameRate); %This is in seconds
+
+% %Sanity check of the fluorescence trace
+% figure
+% plot(timeStamp,F(1,:))
+% xlabel('Time(s)')
+% ylabel('Raw fluorescence (AU)')
+% xlim([0 timeStamp(end)])
+
 
 %This section now evaluates the df/f by the (F-Fneu)/Fneu method
 %There are several conditions, which if met, would lead to df/f
@@ -45,11 +55,21 @@ for cellIndex = 1:size(F,1)
 
                 if PSNR(counter) > 18
 
-                     avgFneu = imgaussfilt(Fneu(cellIndex,:),50);
-                     temp = F(cellIndex,:) - 0.7*avgFneu;
-                     bl = mode(int16(temp));
-                     deltaff(cellCounter,:) = temp/double(bl) - 1;
-                     cellCounter = cellCounter + 1;
+                    for frameIndex = 1:size(F,2)
+
+                        %Calculating df/f by (F-Fneu)/avgFneu (avgFneu is calculated by taking the average of 100 frames of Fneu)
+                        if (frameIndex+99) <= frameIndex
+                            avgFneu = mean(Fneu(cellIndex,frameIndex+99));
+                            deltaff(cellCounter,frameIndex) = (F(cellIndex,frameIndex) - Fneu(cellIndex,frameIndex))/avgFneu;
+                        elseif (frameIndex+99) > frameIndex
+                            avgFneu = mean(Fneu(cellIndex,end-99:end));
+                            deltaff(cellCounter,frameIndex) = (F(cellIndex,frameIndex) - Fneu(cellIndex,frameIndex))/avgFneu;
+                        end
+
+                    end
+
+                    deltaff(cellCounter,:) = deltaff(cellCounter,:)/max(deltaff(cellCounter,:)); %Normalizing the df/f
+                    cellCounter = cellCounter + 1;
 
                 else
                     continue
@@ -73,11 +93,20 @@ for cellIndex = 1:size(F,1)
 
                      if PSNR(newCounter) > 18
 
-                         avgFneu = imgaussfilt(Fneu(cellIndex,:),50);
-                         temp = F(cellIndex,:) - 0.7*avgFneu;
-                         bl = mode(int16(temp));
-                         deltaff(cellCounter,:) = temp/double(bl) - 1;
-                         cellCounter = cellCounter + 1;
+                         for frameIndex = 1:size(F,2)
+
+                             %Calculating df/f by (F-Fneu)/avgFneu (avgFneu is calculated by taking the average of 100 frames of Fneu)
+                             if (frameIndex+99) <= frameIndex
+                                 avgFneu = mean(Fneu(cellIndex,frameIndex+99));
+                                 deltaff(newCounter,frameIndex) = (F(cellIndex,frameIndex) - Fneu(cellIndex,frameIndex))/avgFneu;
+                             elseif (frameIndex+99) > frameIndex
+                                 avgFneu = mean(Fneu(cellIndex,end-99:end));
+                                 deltaff(newCounter,frameIndex) = (F(cellIndex,frameIndex) - Fneu(cellIndex,frameIndex))/avgFneu;
+                             end
+
+                         end
+
+                        deltaff(newCounter,:) = deltaff(newCounter,:)/max(deltaff(newCounter,:)); %Normalizing the df/f
                     
                     else
                         continue
@@ -99,4 +128,17 @@ deltaff = double(deltaff);
 
 
 warning on
+
+% %Sanity check of the interpolated fluorescence trace
+% figure
+% for ii = 1:size(dffByMedian,1)
+%     plot(timeStamp,dffByMedian(ii,:))
+%     xlabel('Time(s)')
+%     ylabel('Raw fluorescence (AU)')
+%     xlim([0 timeStamp(end)])
+%     pause
+% end
+
+
+
     
